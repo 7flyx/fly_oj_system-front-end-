@@ -13,3 +13,18 @@ export function loginService(userAccount, password) {
     })
 }
 
+// 获取用户信息，昵称
+export function getUserInfoService() {
+    return service({
+        url: '/sysUser/info',
+        method: 'get'
+    })
+}
+
+export function logoutService() {
+    return service({
+        url: 'sysUser/logout',
+        method: 'delete'
+    })
+}
+

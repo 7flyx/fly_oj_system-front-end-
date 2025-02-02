@@ -43,8 +43,8 @@ async function loginFun() {
     try {
         const loginResult = await loginService(userAccoount.value, password.value)
         console.log("loginResult: ", loginResult);
-        router.push("/oj/system"); // 跳转页面
         setToken(loginResult.data);
+        router.push("/oj/layout"); // 跳转页面
     } catch (error) {
         console.log("error: ", error);
     }
