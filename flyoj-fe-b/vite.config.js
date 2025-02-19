@@ -28,7 +28,6 @@ export default defineConfig({
     proxy: {
       "/dev-api": {
         target: "http://127.0.0.1:19090/system",
-        changeOrigin: true,
         rewrite: (p) => p.replace(/^\/dev-api/, ""),
       },
     },

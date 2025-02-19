@@ -34,6 +34,7 @@ service.interceptors.response.use(
       // ElNotification.error({ title: msg });
       return Promise.reject(new Error(msg)); // 类似于后端抛出异常信息
     } else {
+      console.log("response: ", res)
       return Promise.resolve(res.data); // 会对返回的数据包进行解析，提取出后端返回的数据
     }
   },

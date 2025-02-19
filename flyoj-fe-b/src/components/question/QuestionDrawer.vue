@@ -17,8 +17,15 @@
         <el-input style="width:300px !important" v-model="formQuestion.spaceLimit" placeholder="请输入空间限制"></el-input>
       </el-form-item>
       <el-form-item label="题目内容:">
-        <div class="editor">
-          <quill-editor placeholder="请输入题目内容" v-model:content="formQuestion.content" content-type="html"></quill-editor>
+        <div class="editor editor-container" >
+          <!-- <el-input placeholder="请输入题目内容" v-model="formQuestion.content" ></el-input> -->
+          <!-- <v-md-editor 
+            v-model="formQuestion.content" 
+            height="300px"
+            :disabled-menus="[]"
+          /> -->
+          <textarea id="markdown-editor" v-model="formQuestion.content"></textarea>
+          <!-- <el-input style="width:387px !important" v-model="formQuestion.questionCase" placeholder="请输入题目用例"></el-input> -->
         </div>
       </el-form-item>
       <el-form-item label="题目用例:">
@@ -31,19 +38,24 @@
         <code-editor @update:value="handleEditorMainFunc" ref="mainFucRef"></code-editor>
       </el-form-item>
       <el-form-item>
-        <el-button class="question-button" type="primary" plain @click="onSubmit()">发布</el-button>
+        <el-button class="question-button" type="primary" plain @click="submitAndExit()">发布</el-button>
+        <el-button class="question-button" type="info" plain @click="onCancel()">取消</el-button>
       </el-form-item>
     </el-form>
   </el-drawer>
 </template>
 
 <script setup>
-import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import CodeEditor from './CodeEditor.vue'
 import QuestionSelector from './QuestionSelector.vue';
 import { ref, reactive } from 'vue';
-import { addQuestionService, getQuestionDetailService, editQuestionService } from '@/apis/question';
+import { addQuestionService, getQuestionDetailService, editQuestionService } from '@/apis/question'
+import { useRouter } from 'vue-router';
+
+
+const router = useRouter();
+
 
 const visibleDrawer = ref(false)
 // formQuesion 已经与上述的输入框进行了 双向绑定
@@ -64,6 +76,7 @@ const defaultCodeRef = ref()
 const mainFucRef = ref()
 
 async function open(questionId) {
+  console.log("open questionId: ", questionId)
   visibleDrawer.value = true
   for (const key in formQuestion) {
     if (formQuestion.hasOwnProperty(key)) {
@@ -125,11 +138,19 @@ async function onSubmit() {
     ElMessage.success('编辑成功')
     emit('success', 'edit')
   } else {
+    console.log("addQuestionService")
     await addQuestionService(fd)
     ElMessage.success('添加成功')
     emit('success', 'add')
   }
+  // visibleDrawer.value = false
+}
+
+async function submitAndExit() {
+  await onSubmit();
   visibleDrawer.value = false
+  console.log('打印收齐抽屉标志：')
+  console.log(visibleDrawer.value)
 }
 
 function handleEditorContent(content) {
@@ -140,10 +161,29 @@ function handleEditorMainFunc(content) {
   formQuestion.mainFunc = content
 }
 
+function onCancel() {
+  visibleDrawer.value = false;
+   console.log(visibleDrawer.value)
+  router.push('/oj/layout/question')
+  console.log("已点击取消按钮")
+}
+
 </script>
 
 <style lang="scss">
 .question-button {
   width: 200px;
+}
+
+.editor-container {
+  width: 90%;
+  height: 300px;
+  margin: 0 auto; /* 居中 */
+  max-width: 1400px;
+}
+
+#markdown-editor {
+  width: 100%;
+  height: 100%;
 }
 </style>

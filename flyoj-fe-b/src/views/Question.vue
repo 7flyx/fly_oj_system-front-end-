@@ -115,6 +115,7 @@ function onSuccess(service) {
 
 async function onEdit(questionId) {
   // 让子组件自己去调用数据的接口，就越过了 父子组件 数据的传递
+  console.log("questionId:", questionId)
   questionDrawerRef.value.open(questionId)
 }
 
